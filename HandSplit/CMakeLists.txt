@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project(HandSplit)
+find_package(OpenCV REQUIRED)
+add_executable(HandSplit main.cpp)
+target_link_libraries(HandSplit ${OpenCV_LIBS})

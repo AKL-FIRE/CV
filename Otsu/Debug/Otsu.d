@@ -1,0 +1,1 @@
+Otsu.o: ../Otsu.cpp

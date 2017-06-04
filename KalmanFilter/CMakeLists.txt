@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project(Kalman)
+find_package(OpenCV REQUIRED)
+add_executable(Kalman main.cpp)
+target_link_libraries(Kalman ${OpenCV_LIBS})

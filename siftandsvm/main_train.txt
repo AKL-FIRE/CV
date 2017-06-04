@@ -1,0 +1,51 @@
+/*
+ * main.cpp
+ *
+ *  Created on: 2017年3月15日
+ *      Author: lcy
+ */
+
+#include "sift.hpp"
+#include "OtsuHand.hpp"
+#include <iostream>
+#include "SVMClassifier.h"
+#include "Bow.hpp"
+#include <string>
+
+int main(int argc, char** argv)
+{
+	mysift sift1;
+	cv::Mat frame,result,descriptors,descripters_all,roi;
+	cv::VideoCapture cap(0);
+	OtsuHand a;
+	BowFeature bow;
+	std::string str("Hand");
+	int flag;
+	for(int i = 0;i < 30; i++)
+	{
+		while(1)
+		{
+			cap >> frame;
+			flag = cv::waitKey(20);
+			cv::rectangle(frame,cv::Point(350,200),cv::Point(500,350),cv::Scalar(255,0,0),1);
+			if(flag == 'q')
+			{
+				break;
+			}
+			cv::Mat temp = frame(cv::Rect(350,200,150,150));
+			temp.copyTo(roi);
+			result = a.justRGB(roi);
+			cv::imshow("2",result);
+		}
+		descriptors = sift1.autocalculate(result);
+		descripters_all.push_back(descriptors);
+		std::cout << descripters_all.size();
+		cv::drawKeypoints(result,sift1.getKeyPoints(),result);
+		cv::imshow("2",result);
+		cv::waitKey(0);
+		flag = 0;
+	}
+	cap.release();
+	bow.FormVisualWords(20,descripters_all);
+}
+

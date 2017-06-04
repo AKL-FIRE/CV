@@ -1,0 +1,14 @@
+build
+训练样本
+.git
+.metadata
+*.mp4
+*.avi
+*.mpg
+*.xml
+挑战杯的副本
+*.wav
+image
+data
+TestingFaceDetection
+

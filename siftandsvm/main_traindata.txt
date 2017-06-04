@@ -1,0 +1,60 @@
+/*
+ * main.cpp
+ *
+ *  Created on: 2017年4月16日
+ *      Author: lcy
+ */
+
+
+#include "sift.hpp"
+#include "OtsuHand.hpp"
+#include <iostream>
+#include "SVMClassifier.h"
+#include "Bow.hpp"
+#include <string>
+
+int main(int argc, char** argv)
+{
+
+	cv::Mat frame,result,descriptors,descripters_all,roi;
+	cv::VideoCapture cap(0);
+	OtsuHand a;
+	BowFeature bow;
+	SVMClassifier svm;
+	//svm.InitialSVM(cv::ml::SVM::Types::C_SVC,cv::ml::SVM::KernelTypes::RBF,cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS,200,1e-5));
+	svm.LoadModel("svm.xml");
+	int flag;
+	for(int i = 0;i < 3; i++)
+	{
+		while(1)
+		{
+			cap >> frame;
+			flag = cv::waitKey(20);
+			cv::rectangle(frame,cv::Point(350,200),cv::Point(500,350),cv::Scalar(255,0,0),1);
+			if(flag == 'q')
+			{
+				break;
+			}
+			cv::Mat temp = frame(cv::Rect(350,200,150,150));
+			temp.copyTo(roi);
+			result = a.justRGB(roi);
+			cv::imshow("2",result);
+		}
+		mysift sift1;
+		sift1.autocalculate(result);
+		descriptors = bow.ExtractorFeatureByBow(result,sift1.getKeyPoints());
+		descripters_all.push_back(descriptors);
+		std::cout << svm.Predict(descriptors);
+		cv::imshow("2",result);
+		cv::waitKey(0);
+		flag = 0;
+	}
+	cap.release();
+	//int labels[30] = {1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3};
+	//cv::Mat labelsmat(30,1,CV_32S,labels);
+	//svm.Train(descripters_all,labelsmat,cv::ml::SampleTypes::ROW_SAMPLE);
+	//svm.SaveModel();
+	std::cout << "done.";
+}
+
+

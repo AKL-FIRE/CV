@@ -1,0 +1,144 @@
+/*
+ * BitTree.cpp
+ *
+ *  Created on: 2017年5月22日
+ *      Author: lcy
+ */
+
+#include <iostream>
+#include <stack>
+
+#define MAXSIZE 1024
+typedef char datatype;
+typedef struct node
+{
+	datatype data;
+	struct node *lchild, *rchild;
+}bitree;
+bitree *node;
+
+bitree *CREATREE()
+{
+	char ch;
+	bitree *q[MAXSIZE];
+	int front,rear;
+	bitree *root,*s;
+	root=nullptr;
+	front=1;
+	rear=0;
+	while(std::cin.get(ch) && ch != '#')
+	{
+		s = nullptr;
+		if(ch!='@')
+		{
+			s = new bitree;
+			s->data = ch;
+			s->lchild = nullptr;
+			s->rchild = nullptr;
+		}
+		rear++;
+		q[rear] = s;
+		if(rear == 1)
+			root = s;
+		else
+		{
+			if(s && q[front])
+				if(rear % 2 == 0)
+					q[front]->lchild = s;
+				else
+					q[front]->rchild = s;
+			if(rear % 2 == 1)
+				front++;
+		}
+	}
+	return root;
+}
+
+void preorder(bitree *p)
+{
+	if(p != nullptr)
+	{
+		std::cout << p->data;
+		preorder(p->lchild);
+		preorder(p->rchild);
+	}
+}
+
+void inorder(bitree *p)
+{
+	if(p != nullptr)
+	{
+		preorder(p->lchild);
+		std::cout << p->data;
+		preorder(p->rchild);
+	}
+}
+
+void postorder(bitree *p)
+{
+	if(p != nullptr)
+	{
+		preorder(p->lchild);
+		preorder(p->rchild);
+		std::cout << p->data;
+	}
+}
+
+void nopreorder(bitree *p)
+{
+	std::stack<bitree*> stk;
+	while(stk.size() != 0 || p != nullptr)
+	{
+		while(p != nullptr)
+		{
+			std::cout << p->data;
+			stk.push(p);
+			p = p->lchild;
+		}
+		if(!stk.empty())
+		{
+			p = stk.top();
+			stk.pop();
+			p = p->rchild;
+		}
+	}
+}
+
+void noppostorder(bitree *p)
+{
+	std::stack<bitree*> stk;
+	bitree* current;
+	bitree *pre = nullptr;
+	stk.push(p);
+	while(!stk.empty())
+	{
+		current =stk.top();
+		if((current->lchild==nullptr&&current->rchild==nullptr)||
+				(pre!=nullptr&&(pre==current->lchild||pre==current->rchild)))
+		{
+			std::cout << current->data;
+			stk.pop();
+			pre = current;
+		}else
+		{
+			if(current->rchild!=nullptr)
+				stk.push(current->rchild);
+			if(current->lchild!=nullptr)
+				stk.push(current->lchild);
+		}
+	}
+}
+
+int main()
+{
+	bitree *r = CREATREE();
+	preorder(r);
+	std::cout << std::endl;
+	nopreorder(r);
+	std::cout << std::endl;
+	postorder(r);
+	std::cout << std::endl;
+	noppostorder(r);
+	return 0;
+}
+
